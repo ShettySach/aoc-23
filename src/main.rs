@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn main() {
-    let data = include_str!("tests.txt");
+    let data = include_str!("inputs.txt");
     let data: Vec<&str> = data.split("\n\n").collect();
 
     let directions: Vec<char> = data[0].chars().collect();
@@ -21,6 +21,7 @@ fn main() {
     let (mut node, mut val) = root;
 
     let mut directions = directions.iter().cycle();
+    let mut steps = 0;
 
     while node != "ZZZ" {
         let dir = directions.next().expect("No more directions");
@@ -35,11 +36,12 @@ fn main() {
                 .clone() // Use clone() here
         };
 
+        steps += 1;
         let (new_node, new_val) = root;
 
         node = new_node;
         val = new_val;
     }
 
-    print!("{}", node);
+    print!("{}", steps);
 }
