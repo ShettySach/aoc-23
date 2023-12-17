@@ -1,47 +1,61 @@
-use std::collections::HashMap;
+use std::collections::{HashSet, VecDeque};
+
+fn dir_val(dir: char) -> (isize, isize) {
+    let res = match dir {
+        'r' => (0, 1),
+        'l' => (0, -1),
+        'u' => (1, 0),
+        'd' => (-1, 0),
+        _ => (0, 0),
+    };
+
+    res
+}
+
+fn mirror(mir: char, dir: char) -> char {
+    let res = if mir == '\\' {
+        match dir {
+            'r' => 'd',
+            'l' => 'u',
+            'u' => 'l',
+            'd' => 'r',
+            _ => '?',
+        }
+    } else {
+        match dir {
+            'r' => 'u',
+            'l' => 'd',
+            'u' => 'r',
+            'd' => 'l',
+            _ => '?',
+        }
+    };
+
+    res
+}
 
 fn main() {
-    let data = include_str!("inputs.txt");
-    let data: Vec<&str> = data.split("\n\n").collect();
+    let data = include_str!("tests.txt")
+        .lines()
+        .map(|l| l.chars().collect::<Vec<char>>())
+        .collect::<Vec<Vec<char>>>();
 
-    let directions: Vec<char> = data[0].chars().collect();
+    println!("{:?}", data);
 
-    let nodes: Vec<String> = data[1].lines().map(String::from).collect();
+    let mut starts: VecDeque<((usize, usize), char)> = vec![((0, 0), 'r')].into();
+    let mut visited: HashSet<(usize, usize)> = HashSet::from([(0, 0)]);
 
-    let mut nmap: HashMap<String, (String, String)> = HashMap::new();
-    nodes.iter().for_each(|line| {
-        let line: String = line.chars().filter(|&c| !"= (),".contains(c)).collect();
-        let node = line[0..3].to_string();
-        let left = line[3..6].to_string();
-        let right = line[6..].to_string();
-        nmap.insert(node, (left, right));
-    });
+    while let Some(((mut i, mut j), mut dir)) = starts.pop_front() {
+        let (di, dj) = dir_val(dir);
+        i = (i as isize + di) as usize;
+        j = (j as isize + dj) as usize;
 
-    let root = nmap.get_key_value("AAA").expect("No root node"); // Use clone() here
-    let (mut node, mut val) = root;
-
-    let mut directions = directions.iter().cycle();
-    let mut steps = 0;
-
-    while node != "ZZZ" {
-        let dir = directions.next().expect("No more directions");
-        let (left, right) = val;
-        let root = if *dir == 'L' {
-            nmap.get_key_value(left)
-                .expect("Left node not found")
-                .clone() // Use clone() here
-        } else {
-            nmap.get_key_value(right)
-                .expect("Right node not found")
-                .clone() // Use clone() here
-        };
-
-        steps += 1;
-        let (new_node, new_val) = root;
-
-        node = new_node;
-        val = new_val;
+        if let Some(row) = data.get(i) {
+            if let Some(ch) = row.get(j) {
+                if *ch == '.' {
+                    visited.insert((i, j));
+                };
+            }
+        }
     }
-
-    print!("{}", steps);
 }
