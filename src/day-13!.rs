@@ -1,3 +1,5 @@
+// Attempt at solution. Gives 400 less than correct output on input case
+
 fn reflection(lines: Vec<&str>) -> (bool, usize) {
     let mut res = 0;
     let mut mirror: Vec<&str> = vec![lines[0]];

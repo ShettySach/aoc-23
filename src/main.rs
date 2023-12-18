@@ -1,61 +1,50 @@
-use std::collections::{HashSet, VecDeque};
+// Solution thanks to - https://github.com/AxlLind/AdventOfCode2023/blob/main/src/bin/17.rs
 
-fn dir_val(dir: char) -> (isize, isize) {
-    let res = match dir {
-        'r' => (0, 1),
-        'l' => (0, -1),
-        'u' => (1, 0),
-        'd' => (-1, 0),
-        _ => (0, 0),
-    };
+use hashbrown::HashMap;
+use std::collections::BinaryHeap;
 
-    res
-}
-
-fn mirror(mir: char, dir: char) -> char {
-    let res = if mir == '\\' {
-        match dir {
-            'r' => 'd',
-            'l' => 'u',
-            'u' => 'l',
-            'd' => 'r',
-            _ => '?',
+fn dijkstra(grid: &[&[u8]], minstep: isize, maxstep: isize) -> i64 {
+    let mut dists = HashMap::new();
+    let mut q = BinaryHeap::from_iter([(0, (0, 0, (0, 0)))]);
+    while let Some((cost, (r, c, d))) = q.pop() {
+        if (r, c) == (grid.len() - 1, grid[0].len() - 1) {
+            return -cost;
         }
-    } else {
-        match dir {
-            'r' => 'u',
-            'l' => 'd',
-            'u' => 'r',
-            'd' => 'l',
-            _ => '?',
+        if dists.get(&(r, c, d)).is_some_and(|&c| -cost > c) {
+            continue;
         }
-    };
-
-    res
-}
-
-fn main() {
-    let data = include_str!("tests.txt")
-        .lines()
-        .map(|l| l.chars().collect::<Vec<char>>())
-        .collect::<Vec<Vec<char>>>();
-
-    println!("{:?}", data);
-
-    let mut starts: VecDeque<((usize, usize), char)> = vec![((0, 0), 'r')].into();
-    let mut visited: HashSet<(usize, usize)> = HashSet::from([(0, 0)]);
-
-    while let Some(((mut i, mut j), mut dir)) = starts.pop_front() {
-        let (di, dj) = dir_val(dir);
-        i = (i as isize + di) as usize;
-        j = (j as isize + dj) as usize;
-
-        if let Some(row) = data.get(i) {
-            if let Some(ch) = row.get(j) {
-                if *ch == '.' {
-                    visited.insert((i, j));
-                };
+        for (dr, dc) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+            if d == (dr, dc) || d == (-dr, -dc) {
+                continue;
+            }
+            let mut next_cost = -cost;
+            for dist in 1..=maxstep {
+                let rr = (r as isize + dr * dist) as usize;
+                let cc = (c as isize + dc * dist) as usize;
+                if rr >= grid.len() || cc >= grid[0].len() {
+                    continue;
+                }
+                next_cost += (grid[rr][cc] - b'0') as i64;
+                if dist < minstep {
+                    continue;
+                }
+                let key = (rr, cc, (dr, dc));
+                if next_cost < *dists.get(&key).unwrap_or(&i64::MAX) {
+                    dists.insert(key, next_cost);
+                    q.push((-next_cost, key));
+                }
             }
         }
     }
+    unreachable!()
+}
+
+fn main() {
+    let grid = include_str!("inputs.txt")
+        .lines()
+        .map(str::as_bytes)
+        .collect::<Vec<_>>();
+    let p1 = dijkstra(&grid, 1, 3);
+    let p2 = dijkstra(&grid, 4, 10);
+    println!("Part 1 = {}, Part 2 = {}", p1, p2);
 }

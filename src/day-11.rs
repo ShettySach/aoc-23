@@ -1,4 +1,4 @@
-// https://github.com/NikolaIliev/aoc_rust/blob/master/src/bin/year2023_day11.rs
+//Was greatly helped by this solution - https://github.com/NikolaIliev/aoc_rust/blob/master/src/bin/year2023_day11.rs
 
 fn find_dist(input: &str, exp: usize) -> usize {
     let grid: Vec<Vec<_>> = input.lines().map(|line| line.chars().collect()).collect();
