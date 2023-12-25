@@ -6,11 +6,10 @@ fn main() {
 
     lines.iter().for_each(|line| {
         let mut line = line.split(":");
-        let _x = line.next();
 
         let (mut r, mut g, mut b) = (1, 1, 1);
 
-        let rounds_str = line.next().unwrap();
+        let rounds_str = line.skip(1).next().unwrap();
         let rounds_str = rounds_str.split(";").collect::<Vec<&str>>();
 
         rounds_str.iter().for_each(|round_str| {

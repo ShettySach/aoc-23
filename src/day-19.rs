@@ -1,5 +1,3 @@
-//Part B calculation error - gives close results but has some error
-
 use hashbrown::HashMap;
 use std::cmp::Ordering;
 
@@ -61,8 +59,8 @@ struct MinMax {
 impl MinMax {
     fn default_vals() -> Self {
         Self {
-            minim: 1,
-            maxim: 4000,
+            minim: 0,
+            maxim: 4001,
         }
     }
 }
@@ -219,7 +217,7 @@ fn helper_a<'a>(
 }
 
 fn main() {
-    let mut data = include_str!("tests.txt").split("\n\n");
+    let mut data = include_str!("inputs.txt").split("\n\n");
     let workflows: HashMap<&str, Vec<Rule>> = data
         .next()
         .unwrap()
@@ -309,10 +307,10 @@ fn main() {
     let mut res = 0;
 
     rangevec.iter().for_each(|ranging| {
-        let x = ranging.x.maxim - ranging.x.minim + 1;
-        let m = ranging.m.maxim - ranging.m.minim + 1;
-        let a = ranging.a.maxim - ranging.a.minim + 1;
-        let s = ranging.s.maxim - ranging.s.minim + 1;
+        let x = ranging.x.maxim - ranging.x.minim - 1;
+        let m = ranging.m.maxim - ranging.m.minim - 1;
+        let a = ranging.a.maxim - ranging.a.minim - 1;
+        let s = ranging.s.maxim - ranging.s.minim - 1;
 
         res += x * m * a * s;
     });

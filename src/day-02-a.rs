@@ -5,12 +5,10 @@ fn main() {
     let (r, g, b) = (12, 13, 14);
 
     let mut sum = 0;
-    lines.iter().for_each(|line| {
+    lines.iter().enumerate().for_each(|i, line| {
         let mut line = line.split(":");
 
-        let game_str = line.next().unwrap();
-        let game_id_str = game_str.split(" ").last().unwrap();
-        let game_id = game_id_str.parse::<u32>().unwrap();
+        let game_id = i + 1;
 
         let rounds_str = line.next().unwrap();
         let rounds_str = rounds_str.split(";").collect::<Vec<&str>>();
