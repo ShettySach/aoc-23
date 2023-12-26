@@ -132,9 +132,9 @@ fn match_comp(mut ranging: Ranging, true_rule: TrueRule) -> Ranging {
 fn part_b<'a>(
     start: &[Rule<'a>],
     workflows: &HashMap<&'a str, Vec<Rule<'a>>>,
-    rangevec: &mut Vec<Ranging>,
+    rangevec: &'a mut Vec<Ranging>,
     mut ranging: Ranging,
-) -> Vec<Ranging> {
+) -> &'a Vec<Ranging> {
     for rule in start {
         match rule {
             Rule::Dest(dest) => {
@@ -164,7 +164,7 @@ fn part_b<'a>(
         };
     }
 
-    rangevec.clone()
+    rangevec
 }
 
 fn helper_b<'a>(
