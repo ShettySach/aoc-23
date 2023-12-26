@@ -1,6 +1,5 @@
 use hashbrown::HashSet;
-use nom::lib::std::collections::VecDeque;
-use nom::lib::std::vec::Vec;
+use std::collections::VecDeque;
 
 #[derive(PartialEq, Hash, Eq, Clone, Copy, Debug)]
 struct Point {
